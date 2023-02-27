@@ -1,77 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { ImageBackground, StyleSheet, Text, View, Image } from "react-native";
-import axios from "axios";
 import Geolocation from "@react-native-community/geolocation";
 
-export default function App() {
-  // Day, Date, Month Fetch Function Starts
+const API_KEY = "fde70b7b510d418c6126c7433ab077c4"; // API KEY FROM OPENWEATHERMAP
 
-  const [currentDay, setCurrentDay] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
+//FETCHING DATA FROM OPENWEATHERMAP API
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const dateObj = new Date();
-      setCurrentDay(dateObj.toLocaleDateString("en-US", { weekday: "long" }));
-      const month = dateObj.toLocaleString("default", { month: "long" });
-      const day = dateObj.getDate();
-      setCurrentDate(`${day} ${month}`);
-    }, 1000);
+const fetchWeatherData = async (latitude, longitude) => {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+// FETCHING DATA ENDS
 
-    return () => clearInterval(interval);
-  }, []);
+// GETTING WEATHER ICONS
 
-  // Day, Date, Month Fetch Function Ends
-
-  // API KEY INFO Starts
-
-  const API_KEY = "fde70b7b510d418c6126c7433ab077c4";
-
-  // API KEY INFO Ends
-
-  // Location Fetching Starts
-
-  const [weatherData, setWeatherData] = useState(null);
-
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
-        axios
-          .get(URL)
-          .then((response) => {
-            setWeatherData(response.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      },
-      (error) => {
-        console.log(error);
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  }, []);
-
-  // Location Fetching Ends
-
-  // Weather Data Fetching Starts
-
-  const [weather, setWeather] = useState(null);
-
-  useEffect(() => {
-    const getWeather = async () => {
-      const data = await fetchWeatherData();
-      setWeather(data);
-    };
-    getWeather();
-  }, []);
-
-  // Weather Data Fetching Ends
-
-  //Wether Conditiion Image Fetching Starts
-
+const getWeatherIcon = (weatherCondition, hour) => {
   const weatherIcons = {
     Clear: [require("./assets/Sunny.png"), require("./assets/ClearNight.png")],
     Clouds: require("./assets/Cloudy.png"),
@@ -80,67 +26,56 @@ export default function App() {
     Snow: require("./assets/Snowy.png"),
   };
 
-  const weatherIcon = weather ? weatherIcons[weather] : null;
+  if (Array.isArray(weatherIcons[weatherCondition])) {
+    if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
+    return weatherIcons[weatherCondition][0];
+  }
+  return weatherIcons[weatherCondition];
+};
 
-  //Weather Condition Image Fetching Ends
+// GETTING WEATHER ICONS ENDS
 
-  //Weather Condition Fetching Starts
-  const getLocation = () => {
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          resolve({ latitude, longitude });
-        },
-        error => {
-          reject(error);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-    });
-  };
+// Fetching Day, Month and Date from Date Object
 
-  const fetchWeatherData = async (latitude, longitude) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const weather = data.weather[0].main;
-    return weather;
-  };
+export default function App() {
+  const dateObj = new Date();
+  const dayName = dateObj.toLocaleString("default", { weekday: "long" });
+  const dayNum = dateObj.getDate();
+  const month = dateObj.toLocaleString("default", { month: "long" });
+  const date = `${dayName}, ${dayNum} ${month}`;
 
-  
-    useEffect(() => {
-      const getWeather = async () => {
-        try {
-          const { latitude, longitude } = await getLocation();
-          const data = await fetchWeatherData(latitude, longitude);
-          setWeather(data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      getWeather();
-    }, []);
+  // Fetching Day, Month and Date from Date Object ENDS
 
-  //Weather Condition Fetching ends
+  //Fetching location
 
-  // Temperature Fetch By Location Starts
-
-  const [temperature, setTemperature] = useState(null);
+  const [data, setData] = useState(null);
+  const [weatherIcon, setWeatherIcon] = useState(null);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
+    Geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setTemperature(data.main.temp);
+      fetchWeatherData(latitude, longitude).then((data) => {
+        setData(data);
+      });
     });
   }, []);
 
-  // Temperature Fetch By Location Ends
+  //Fetching location ENDS
 
-  // MAIN RENDER FUNCTION STARTS
+  //Fetching Weather data
+
+  useEffect(() => {
+    if (data) {
+      const hour = new Date().getHours();
+      const weatherCondition = data.weather[0].main;
+      const weatherIcon = getWeatherIcon(weatherCondition, hour);
+      setWeatherIcon(weatherIcon);
+    }
+  }, [data]);
+
+  //Fetching Weather data ENDS
+
+  // RENDER STARTS
 
   return (
     <ImageBackground
@@ -148,16 +83,14 @@ export default function App() {
       source={require("./assets/BG_Gradient.png")}
     >
       <View style={styles.Datecontainer}>
-        <Text>
-          <Text style={styles.DateText}>
-            {currentDay}, {currentDate}
-          </Text>
-        </Text>
+        <Text style={styles.DateText}>{date}</Text>
       </View>
       <View>
-        {weatherData ? (
+        {data ? (
           <View style={styles.CurrentLocation}>
-            <Text style={styles.CurrentLocationText}>{weatherData.name}</Text>
+            <Text style={styles.CurrentLocationText}>
+              {data.name}, {data.sys.country}
+            </Text>
           </View>
         ) : (
           <Text style={styles.CurrentLocationText}>Loading...</Text>
@@ -167,18 +100,27 @@ export default function App() {
         <View>
           <Image source={weatherIcon} style={{ width: 150, height: 150 }} />
         </View>
-        <Text style={styles.weatherImageText}> {weather}</Text>
+        <Text style={styles.weatherImageText}>
+          {data ? data.weather[0].description : "Loading..."}
+        </Text>
       </View>
       <View style={styles.temp}>
         <Text style={styles.tempText}>
-          {temperature ? `${temperature}°C` : "Loading..."}
+          {data ? `${data.main.temp.toFixed(1)}°C` : "Loading..."}
+        </Text>
+      </View>
+      <View>
+        <Text style={styles.feelLikeText}>
+          {data
+            ? `Feels Like: ${data.main.feels_like.toFixed(1)}°C`
+            : "Loading..."}
         </Text>
       </View>
     </ImageBackground>
   );
 }
 
-// MAIN RENDER FUNCTION ENDS
+// RENDER ENDS
 
 // STYLESHEET STARTS
 
@@ -222,22 +164,34 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingTop: "2rem",
   },
+
   weatherImageText: {
     fontSize: "1.5rem",
     fontFamily: "Montserrat",
     color: "#f1f1f1",
+    textTransform: "capitalize",
     fontWeight: "500",
     textAlign: "center",
     paddingTop: "1rem",
   },
+
   temp: {
     marginTop: "1rem",
   },
+
   tempText: {
     fontSize: "4rem",
     fontFamily: "Montserrat",
     color: "#f1f1f1",
     fontWeight: "100",
+    textAlign: "center",
+  },
+
+  feelLikeText: {
+    fontSize: "1rem",
+    fontFamily: "Montserrat",
+    color: "#f1f1f1",
+    fontWeight: "500",
     textAlign: "center",
   },
 });
