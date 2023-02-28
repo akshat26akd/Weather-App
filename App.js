@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ImageBackground, StyleSheet, Text, View, Image } from "react-native";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import Geolocation from "@react-native-community/geolocation";
 
 const API_KEY = "fde70b7b510d418c6126c7433ab077c4"; // API KEY FROM OPENWEATHERMAP
@@ -80,11 +88,22 @@ export default function App() {
 
   // RENDER STARTS
 
+  // onPress={handleSearch}
+
   return (
     <ImageBackground
       style={styles.backgroundImage}
       source={require("./assets/BG_Gradient.png")}
     >
+      <View style={styles.searchBar}>
+        <TextInput style={styles.input} placeholder="Search City" />
+        <TouchableOpacity>
+          <Image
+            source={require("./assets/search-loc.png")}
+            style={styles.searchIcon}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={styles.Datecontainer}>
         <Text style={styles.DateText}>{date}</Text>
       </View>
@@ -195,10 +214,33 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(241, 241, 241, 0.95)",
+    borderRadius: "2rem",
+    marginVertical: "2rem",
+    marginHorizontal: "2rem",
+    paddingHorizontal: "1rem",
+  },
+
+  input: {
+    flex: 1,
+    paddingVertical: "1rem",
+    fontFamily: "Montserrat",
+    fontSize: "1rem",
+    outlineStyle: "none",
+    outlineColor: "transparent",
+  },
+
+  searchIcon: {
+    width: "1.5rem",
+    height: "1.5rem",
+  },
+
   Datecontainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "4rem",
   },
 
   DateText: {
@@ -213,7 +255,7 @@ const styles = StyleSheet.create({
   CurrentLocation: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "1rem",
+    paddingTop: "0.7rem",
   },
 
   CurrentLocationText: {
@@ -228,7 +270,7 @@ const styles = StyleSheet.create({
   weatherImage: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "2rem",
+    paddingTop: "1.5rem",
   },
 
   weatherImageText: {
@@ -238,7 +280,6 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontWeight: "500",
     textAlign: "center",
-    paddingTop: "1rem",
   },
 
   temp: {
