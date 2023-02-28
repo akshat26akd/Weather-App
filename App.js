@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Geolocation from "@react-native-community/geolocation";
+import { useFonts } from "expo-font";
+import { Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 
 const API_KEY = "fde70b7b510d418c6126c7433ab077c4"; // API KEY FROM OPENWEATHERMAP
 
@@ -26,6 +28,10 @@ const fetchWeatherData = async (latitude, longitude) => {
 // Fetching Day, Month and Date from Date Object
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    "Montserrat-Regular": Montserrat_400Regular,
+  });
+
   const dateObj = new Date();
   const dayName = dateObj.toLocaleString("default", { weekday: "long" });
   const dayNum = dateObj.getDate();
@@ -230,7 +236,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingVertical: "1rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     fontSize: "1rem",
     outlineStyle: "none",
     outlineColor: "transparent",
@@ -247,7 +253,7 @@ const styles = StyleSheet.create({
   },
 
   DateText: {
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     fontSize: "1.5rem",
     color: "#f1f1f1",
     fontStyle: "italic",
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
   },
 
   CurrentLocationText: {
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     fontSize: "1.3rem",
     fontVariant: ["small-caps"],
     color: "#f1f1f1",
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
 
   weatherImageText: {
     fontSize: "1.7rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     textTransform: "capitalize",
     fontWeight: "500",
@@ -287,7 +293,7 @@ const styles = StyleSheet.create({
 
   cloudCover: {
     fontSize: "1rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     textTransform: "capitalize",
     fontWeight: "500",
@@ -301,7 +307,7 @@ const styles = StyleSheet.create({
 
   tempText: {
     fontSize: "4rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#ffffff",
     fontWeight: "normal",
     textAlign: "center",
@@ -309,7 +315,7 @@ const styles = StyleSheet.create({
 
   feelLikeText: {
     fontSize: "1rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     fontWeight: "500",
     textAlign: "center",
@@ -347,7 +353,7 @@ const styles = StyleSheet.create({
 
   boxHeaderText: {
     fontSize: "1.1rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     fontWeight: "500",
     paddingVertical: "1rem",
@@ -355,7 +361,7 @@ const styles = StyleSheet.create({
 
   BoxMainText: {
     fontSize: "2rem",
-    fontFamily: "Montserrat",
+    fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     fontWeight: "500",
     textAlign: "auto",
