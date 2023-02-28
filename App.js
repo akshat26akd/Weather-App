@@ -15,26 +15,6 @@ const fetchWeatherData = async (latitude, longitude) => {
 };
 // FETCHING DATA ENDS
 
-// GETTING WEATHER ICONS
-
-const getWeatherIcon = (weatherCondition, hour) => {
-  const weatherIcons = {
-    Clear: [require("./assets/Sunny.png"), require("./assets/ClearNight.png")],
-    Clouds: require("./assets/Cloudy.png"),
-    Rain: require("./assets/Rainy.png"),
-    Windy: require("./assets/Windy.png"),
-    Snow: require("./assets/Snowy.png"),
-  };
-
-  if (Array.isArray(weatherIcons[weatherCondition])) {
-    if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
-    return weatherIcons[weatherCondition][0];
-  }
-  return weatherIcons[weatherCondition];
-};
-
-// GETTING WEATHER ICONS ENDS
-
 // Fetching Day, Month and Date from Date Object
 
 export default function App() {
@@ -45,6 +25,29 @@ export default function App() {
   const date = `${dayName}, ${dayNum} ${month}`;
 
   // Fetching Day, Month and Date from Date Object ENDS
+
+  // GETTING WEATHER ICONS
+
+  const getWeatherIcon = (weatherCondition, hour) => {
+    const weatherIcons = {
+      Clear: [
+        require("./assets/Sunny.png"),
+        require("./assets/ClearNight.png"),
+      ],
+      Clouds: require("./assets/Cloudy.png"),
+      Rain: require("./assets/Rainy.png"),
+      Windy: require("./assets/Windy.png"),
+      Snow: require("./assets/Snowy.png"),
+    };
+
+    if (Array.isArray(weatherIcons[weatherCondition])) {
+      if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
+      return weatherIcons[weatherCondition][0];
+    }
+    return weatherIcons[weatherCondition];
+  };
+
+  // GETTING WEATHER ICONS ENDS
 
   //Fetching location
 
@@ -93,28 +96,91 @@ export default function App() {
             </Text>
           </View>
         ) : (
-          <Text style={styles.CurrentLocationText}>Loading...</Text>
+          <Text style={styles.CurrentLocationText}></Text>
         )}
       </View>
       <View style={styles.weatherImage}>
         <View>
-          <Image source={weatherIcon} style={{ width: 150, height: 150 }} />
+          <Image
+            source={weatherIcon}
+            style={{ width: "8rem", height: "8rem" }}
+          />
         </View>
         <Text style={styles.weatherImageText}>
-          {data ? data.weather[0].description : "Loading..."}
+          {data ? data.weather[0].description : ""}
         </Text>
       </View>
       <View style={styles.temp}>
         <Text style={styles.tempText}>
-          {data ? `${data.main.temp.toFixed(1)}°C` : "Loading..."}
+          {data ? `${data.main.temp.toFixed(1)}°C` : "- -"}
         </Text>
       </View>
       <View>
         <Text style={styles.feelLikeText}>
-          {data
-            ? `Feels Like: ${data.main.feels_like.toFixed(1)}°C`
-            : "Loading..."}
+          {data ? `Feels Like: ${data.main.feels_like.toFixed(0)}°C` : ""}
         </Text>
+      </View>
+
+      <View style={styles.grid}>
+        {/* Wind */}
+
+        <View style={styles.box}>
+          <View style={styles.boxHeader}>
+            <Image
+              style={styles.boxHeaderIcon}
+              source={require("./assets/Windy.png")}
+            />
+            <Text style={styles.boxHeaderText}>Wind</Text>
+          </View>
+          <Text style={styles.BoxMainText}>
+            {data ? `${data.wind.speed.toFixed(1)} m/s` : ""}
+          </Text>
+        </View>
+
+        {/* Humidity */}
+
+        <View style={styles.box}>
+          <View style={styles.boxHeader}>
+            <Image
+              style={styles.boxHeaderIcon}
+              source={require("./assets/Humidity.png")}
+            />
+            <Text style={styles.boxHeaderText}>Humidity</Text>
+          </View>
+          <Text style={styles.BoxMainText}>
+            {data ? `${data.main.humidity}%` : ""}
+          </Text>
+        </View>
+
+        {/* Pressure */}
+
+        <View style={styles.box}>
+          <View style={styles.boxHeader}>
+            <Image
+              style={styles.boxHeaderIcon}
+              source={require("./assets/Pressure.png")}
+            />
+            <Text style={styles.boxHeaderText}>Pressure</Text>
+          </View>
+          <Text style={styles.BoxMainText}>
+            {data ? `${data.main.pressure} hPa` : ""}
+          </Text>
+        </View>
+
+        {/* Visibility */}
+
+        <View style={styles.box}>
+          <View style={styles.boxHeader}>
+            <Image
+              style={styles.boxHeaderIcon}
+              source={require("./assets/Visibility.png")}
+            />
+            <Text style={styles.boxHeaderText}>Visibility</Text>
+          </View>
+          <Text style={styles.BoxMainText}>
+            {data ? `${data.visibility / 1000} km` : ""}
+          </Text>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -132,7 +198,7 @@ const styles = StyleSheet.create({
   Datecontainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "7rem",
+    paddingTop: "4rem",
   },
 
   DateText: {
@@ -183,7 +249,7 @@ const styles = StyleSheet.create({
     fontSize: "4rem",
     fontFamily: "Montserrat",
     color: "#f1f1f1",
-    fontWeight: "100",
+    fontWeight: "normal",
     textAlign: "center",
   },
 
@@ -193,6 +259,54 @@ const styles = StyleSheet.create({
     color: "#f1f1f1",
     fontWeight: "500",
     textAlign: "center",
+  },
+
+  grid: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: "2rem",
+    gap: 30,
+  },
+
+  box: {
+    width: "10rem",
+    height: "10rem",
+    borderRadius: 10,
+    backgroundColor: "rgba(241, 241, 241, 0.3)",
+  },
+
+  boxHeader: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  boxHeaderIcon: {
+    width: "1.75rem",
+    height: "1.75rem",
+    marginLeft: "0.5rem",
+    marginTop: "0.8rem",
+    opacity: 0.8,
+  },
+
+  boxHeaderText: {
+    fontSize: "1.1rem",
+    fontFamily: "Montserrat",
+    color: "rgba(241, 241, 241, 0.7)",
+    fontWeight: "500",
+    paddingVertical: "1rem",
+  },
+
+  BoxMainText: {
+    fontSize: "2rem",
+    fontFamily: "Montserrat",
+    color: "#f1f1f1",
+    fontWeight: "500",
+    textAlign: "auto",
+    paddingLeft: "0.5rem",
+    paddingTop: "1rem",
   },
 });
 
