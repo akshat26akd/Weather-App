@@ -31,7 +31,7 @@ export default function App() {
   const getWeatherIcon = (weatherCondition, hour) => {
     const weatherIcons = {
       Clear: [
-        require("./assets/Sunny.png"),
+        require("./assets/ClearDay.png"),
         require("./assets/ClearNight.png"),
       ],
       Clouds: require("./assets/Cloudy.png"),
@@ -275,12 +275,13 @@ const styles = StyleSheet.create({
     width: "10rem",
     height: "10rem",
     borderRadius: 10,
-    backgroundColor: "rgba(241, 241, 241, 0.3)",
+    backgroundColor: "rgba(241, 241, 241, 0.15)",
   },
 
   boxHeader: {
     flexDirection: "row",
     gap: 10,
+    opacity: 0.8,
   },
 
   boxHeaderIcon: {
@@ -288,13 +289,12 @@ const styles = StyleSheet.create({
     height: "1.75rem",
     marginLeft: "0.5rem",
     marginTop: "0.8rem",
-    opacity: 0.8,
   },
 
   boxHeaderText: {
     fontSize: "1.1rem",
     fontFamily: "Montserrat",
-    color: "rgba(241, 241, 241, 0.7)",
+    color: "#f1f1f1",
     fontWeight: "500",
     paddingVertical: "1rem",
   },
