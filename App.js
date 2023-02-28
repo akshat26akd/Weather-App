@@ -42,14 +42,25 @@ export default function App() {
         require("./assets/ClearDay.png"),
         require("./assets/ClearNight.png"),
       ],
-      Clouds: require("./assets/Cloudy.png"),
-      Rain: require("./assets/Rainy.png"),
-      Windy: require("./assets/Windy.png"),
-      Snow: require("./assets/Snowy.png"),
+      Clouds: require("./assets/Cloud.png"),
+      Rain: require("./assets/Rain.png"),
+      Wind: require("./assets/Wind.png"),
+      Snow: require("./assets/Snow.png"),
+      Fog: require("./assets/Fog.png"),
+      Drizzle: require("./assets/Drizzle.png"),
+      Tornado: require("./assets/Tornado.png"),
+      Ash: require("./assets/DustSandAsh.png"),
+      Dust: require("./assets/DustSandAsh.png"),
+      Sand: require("./assets/DustSandAsh.png"),
+      Haze: require("./assets/HazeMistSmoke.png"),
+      Mist: require("./assets/HazeMistSmoke.png"),
+      Smoke: require("./assets/HazeMistSmoke.png"),
+      Squall: require("./assets/ThunderstormSquall.png"),
+      Thunderstorm: require("./assets/ThunderstormSquall.png"),
     };
 
     if (Array.isArray(weatherIcons[weatherCondition])) {
-      if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
+      if (hour >= 18.5 || hour <= 6) return weatherIcons[weatherCondition][1];
       return weatherIcons[weatherCondition][0];
     }
     return weatherIcons[weatherCondition];
@@ -88,8 +99,6 @@ export default function App() {
 
   // RENDER STARTS
 
-  // onPress={handleSearch}
-
   return (
     <ImageBackground
       style={styles.backgroundImage}
@@ -120,34 +129,43 @@ export default function App() {
       </View>
       <View style={styles.weatherImage}>
         <View>
-          <Image
-            source={weatherIcon}
-            style={{ width: "8rem", height: "8rem" }}
-          />
+          <Image source={weatherIcon} style={{ width: 120, height: 120 }} />
         </View>
         <Text style={styles.weatherImageText}>
           {data ? data.weather[0].description : ""}
         </Text>
+        <Text style={styles.cloudCover}>
+          {data ? `Clouds Cover: ${data.clouds.all}%` : ""}
+        </Text>
       </View>
       <View style={styles.temp}>
         <Text style={styles.tempText}>
-          {data ? `${data.main.temp.toFixed(1)}°C` : "- -"}
-        </Text>
-      </View>
-      <View>
-        <Text style={styles.feelLikeText}>
-          {data ? `Feels Like: ${data.main.feels_like.toFixed(0)}°C` : ""}
+          {data ? `${data.main.temp.toFixed(1)}°C` : "_ _"}
         </Text>
       </View>
 
       <View style={styles.grid}>
+        {/*Feels Like */}
+
+        <View style={styles.box}>
+          <View style={styles.boxHeader}>
+            <Image
+              style={styles.boxHeaderIcon}
+              source={require("./assets/FeelsLike.png")}
+            />
+            <Text style={styles.boxHeaderText}>Feels Like</Text>
+          </View>
+          <Text style={styles.BoxMainText}>
+            {data ? `${data.main.feels_like.toFixed(0)}°C` : ""}
+          </Text>
+        </View>
         {/* Wind */}
 
         <View style={styles.box}>
           <View style={styles.boxHeader}>
             <Image
               style={styles.boxHeaderIcon}
-              source={require("./assets/Windy.png")}
+              source={require("./assets/Wind.png")}
             />
             <Text style={styles.boxHeaderText}>Wind</Text>
           </View>
@@ -168,21 +186,6 @@ export default function App() {
           </View>
           <Text style={styles.BoxMainText}>
             {data ? `${data.main.humidity}%` : ""}
-          </Text>
-        </View>
-
-        {/* Pressure */}
-
-        <View style={styles.box}>
-          <View style={styles.boxHeader}>
-            <Image
-              style={styles.boxHeaderIcon}
-              source={require("./assets/Pressure.png")}
-            />
-            <Text style={styles.boxHeaderText}>Pressure</Text>
-          </View>
-          <Text style={styles.BoxMainText}>
-            {data ? `${data.main.pressure} hPa` : ""}
           </Text>
         </View>
 
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
 
   DateText: {
     fontFamily: "Montserrat",
-    fontSize: "1.75rem",
+    fontSize: "1.5rem",
     color: "#f1f1f1",
     fontStyle: "italic",
     fontWeight: "bold",
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
 
   CurrentLocationText: {
     fontFamily: "Montserrat",
-    fontSize: "1.5rem",
+    fontSize: "1.3rem",
     fontVariant: ["small-caps"],
     color: "#f1f1f1",
     fontWeight: "500",
@@ -270,16 +273,26 @@ const styles = StyleSheet.create({
   weatherImage: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "1.5rem",
+    paddingTop: "2rem",
   },
 
   weatherImageText: {
-    fontSize: "1.5rem",
+    fontSize: "1.7rem",
     fontFamily: "Montserrat",
     color: "#f1f1f1",
     textTransform: "capitalize",
     fontWeight: "500",
     textAlign: "center",
+  },
+
+  cloudCover: {
+    fontSize: "1rem",
+    fontFamily: "Montserrat",
+    color: "#f1f1f1",
+    textTransform: "capitalize",
+    fontWeight: "500",
+    textAlign: "center",
+    marginTop: "0.5rem",
   },
 
   temp: {
@@ -289,7 +302,7 @@ const styles = StyleSheet.create({
   tempText: {
     fontSize: "4rem",
     fontFamily: "Montserrat",
-    color: "#f1f1f1",
+    color: "#ffffff",
     fontWeight: "normal",
     textAlign: "center",
   },
