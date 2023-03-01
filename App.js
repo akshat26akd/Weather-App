@@ -25,12 +25,16 @@ const fetchWeatherData = async (latitude, longitude) => {
 };
 // FETCHING DATA ENDS
 
-// Fetching Day, Month and Date from Date Object
+//FONTS STARTS
 
 export default function App() {
   let [fontsLoaded] = useFonts({
     "Montserrat-Regular": Montserrat_400Regular,
   });
+
+  //FONTS ENDS
+
+  // Fetching Day, Month and Date from Date Object
 
   const dateObj = new Date();
   const dayName = dateObj.toLocaleString("default", { weekday: "long" });
@@ -110,7 +114,7 @@ export default function App() {
       style={styles.backgroundImage}
       source={require("./assets/BG_Gradient.png")}
     >
-      <View style={styles.searchBar}>
+      {/* <View style={styles.searchBar}>
         <TextInput style={styles.input} placeholder="Search City" />
         <TouchableOpacity>
           <Image
@@ -118,7 +122,7 @@ export default function App() {
             style={styles.searchIcon}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.Datecontainer}>
         <Text style={styles.DateText}>{date}</Text>
       </View>
@@ -250,6 +254,7 @@ const styles = StyleSheet.create({
   Datecontainer: {
     alignItems: "center",
     justifyContent: "center",
+    marginTop: "4rem",
   },
 
   DateText: {
