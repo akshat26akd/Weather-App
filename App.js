@@ -288,12 +288,13 @@ const styles = StyleSheet.create({
   },
 
   weatherImageText: {
-    fontSize: "1.7rem",
+    fontSize: "2rem",
     fontFamily: "Montserrat-Regular",
     color: "#f1f1f1",
     textTransform: "capitalize",
-    fontWeight: "500",
+    fontWeight: "bold",
     textAlign: "center",
+    paddingTop: "2rem",
   },
 
   cloudCover: {
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     fontSize: "4rem",
     fontFamily: "Montserrat-Regular",
     color: "#ffffff",
-    fontWeight: "normal",
+    fontWeight: "600",
     textAlign: "center",
   },
 
