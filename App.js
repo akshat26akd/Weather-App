@@ -70,7 +70,7 @@ export default function App() {
     };
 
     if (Array.isArray(weatherIcons[weatherCondition])) {
-      if (hour >= 18.5 || hour <= 6) return weatherIcons[weatherCondition][1];
+      if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
       return weatherIcons[weatherCondition][0];
     }
     return weatherIcons[weatherCondition];
