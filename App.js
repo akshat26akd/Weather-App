@@ -8,7 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import Geolocation from "@react-native-community/geolocation";
+import Geolocation from "react-native-geolocation-service";
+
 import { useFonts } from "expo-font";
 import { Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 
@@ -28,7 +29,7 @@ const fetchWeatherData = async (latitude, longitude) => {
 //FONTS STARTS
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
+  useFonts({
     "Montserrat-Regular": Montserrat_400Regular,
   });
 
@@ -86,9 +87,18 @@ export default function App() {
   useEffect(() => {
     Geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      fetchWeatherData(latitude, longitude).then((data) => {
-        setData(data);
-      });
+      fetchWeatherData(latitude, longitude).then(
+        (data) => {
+          setData(data);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+          distanceFilter: 0,
+          background: true, // Enable background location updates
+        }
+      );
     });
   }, []);
 
