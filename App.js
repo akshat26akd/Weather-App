@@ -136,6 +136,7 @@ export default function App() {
           placeholder="Search City"
           value={searchQuery}
           onChangeText={setSearchQuery}
+          onSubmitEditing={fetchWeatherDataByCity}
         />
         <TouchableOpacity onPress={fetchWeatherDataByCity}>
           <Image
