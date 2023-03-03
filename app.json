@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.weather_app"
     },
     "web": {
       "favicon": "./assets/app-icon.png"
