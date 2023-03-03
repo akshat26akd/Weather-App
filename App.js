@@ -13,27 +13,58 @@ import Geolocation from "react-native-geolocation-service";
 import { useFonts } from "expo-font";
 import { Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 
-const API_KEY = "fde70b7b510d418c6126c7433ab077c4"; // API KEY FROM OPENWEATHERMAP
-
-//FETCHING DATA FROM OPENWEATHERMAP API
-
-const fetchWeatherData = async (latitude, longitude) => {
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-  const response = await fetch(url);
-  const data = await response.json();
-  console.log(data);
-  return data;
-};
-// FETCHING DATA ENDS
-
-//FONTS STARTS
+const API_KEY = "fde70b7b510d418c6126c7433ab077c4";
 
 export default function App() {
+  //FONTS STARTS
+
   useFonts({
     "Montserrat-Regular": Montserrat_400Regular,
   });
 
   //FONTS ENDS
+
+  //Fetching location
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState(null);
+  const [weatherIcon, setWeatherIcon] = useState(null);
+
+  useEffect(() => {
+    const fetchWeatherData = async (latitude, longitude) => {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    };
+
+    if (searchQuery === "") {
+      Geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        fetchWeatherData(latitude, longitude).then(
+          (data) => {
+            setData(data);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+            distanceFilter: 0,
+            background: true,
+          }
+        );
+      });
+    }
+  }, [searchQuery]);
+
+  const fetchWeatherDataByCity = async () => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&appid=${API_KEY}&units=metric`;
+    const response = await fetch(url);
+    const cityData = await response.json();
+    setData(cityData);
+  };
+
+  //Fetching location ENDS
 
   // Fetching Day, Month and Date from Date Object
 
@@ -79,31 +110,6 @@ export default function App() {
 
   // GETTING WEATHER ICONS ENDS
 
-  //Fetching location
-
-  const [data, setData] = useState(null);
-  const [weatherIcon, setWeatherIcon] = useState(null);
-
-  useEffect(() => {
-    Geolocation.getCurrentPosition((position) => {
-      const { latitude, longitude } = position.coords;
-      fetchWeatherData(latitude, longitude).then(
-        (data) => {
-          setData(data);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-          distanceFilter: 0,
-          background: true, // Enable background location updates
-        }
-      );
-    });
-  }, []);
-
-  //Fetching location ENDS
-
   //Fetching Weather data
 
   useEffect(() => {
@@ -124,24 +130,27 @@ export default function App() {
       style={styles.backgroundImage}
       source={require("./assets/BG_Gradient.png")}
     >
-      {/* <View style={styles.searchBar}>
-        <TextInput style={styles.input} placeholder="Search City" />
-        <TouchableOpacity>
+      <View style={styles.searchBar}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search City"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <TouchableOpacity onPress={fetchWeatherDataByCity}>
           <Image
             source={require("./assets/search-loc.png")}
             style={styles.searchIcon}
           />
         </TouchableOpacity>
-      </View> */}
+      </View>
       <View style={styles.Datecontainer}>
         <Text style={styles.DateText}>{date}</Text>
       </View>
       <View>
         {data ? (
           <View style={styles.CurrentLocation}>
-            <Text style={styles.CurrentLocationText}>
-              {data.name}, {data.sys.country}
-            </Text>
+            <Text style={styles.CurrentLocationText}>{data.name}</Text>
           </View>
         ) : (
           <Text style={styles.CurrentLocationText}></Text>
@@ -264,7 +273,7 @@ const styles = StyleSheet.create({
   Datecontainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "4rem",
+    // marginTop: "4rem",
   },
 
   DateText: {
@@ -294,7 +303,7 @@ const styles = StyleSheet.create({
   weatherImage: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: "2rem",
+    paddingTop: "1rem",
   },
 
   weatherImageText: {
@@ -304,7 +313,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontWeight: "bold",
     textAlign: "center",
-    paddingTop: "2rem",
+    paddingTop: "1rem",
   },
 
   cloudCover: {
