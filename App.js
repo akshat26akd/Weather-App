@@ -27,6 +27,7 @@ export default function App() {
   //Fetching location
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [weatherIcon, setWeatherIcon] = useState(null);
 
@@ -35,6 +36,7 @@ export default function App() {
       const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
       const response = await fetch(url);
       const data = await response.json();
+      // console.log(data)
       return data;
     };
 
@@ -58,10 +60,22 @@ export default function App() {
   }, [searchQuery]);
 
   const fetchWeatherDataByCity = async () => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&appid=${API_KEY}&units=metric`;
-    const response = await fetch(url);
-    const cityData = await response.json();
-    setData(cityData);
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&appid=${API_KEY}&units=metric`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Invalid City Name`);
+      }
+
+      const cityData = await response.json();
+      setError(null);
+      // console.log(cityData)
+      setData(cityData);
+    } catch (error) {
+      console.error(error);
+      setError("Invalid!"); // set the error message state
+    }
   };
 
   //Fetching location ENDS
@@ -138,6 +152,7 @@ export default function App() {
           onChangeText={setSearchQuery}
           onSubmitEditing={fetchWeatherDataByCity}
         />
+        {error && <Text style={styles.error}>{error}</Text>}
         <TouchableOpacity onPress={fetchWeatherDataByCity}>
           <Image
             source={require("./assets/search-loc.png")}
@@ -269,6 +284,13 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: "1.5rem",
     height: "1.5rem",
+  },
+
+  error: {
+    color: "red",
+    fontSize: "1rem",
+    fontFamily: "Montserrat-Regular",
+    paddingRight: "1rem",
   },
 
   Datecontainer: {
