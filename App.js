@@ -83,10 +83,10 @@ export default function App() {
   // Fetching Day, Month and Date from Date Object
 
   const dateObj = new Date();
-  const dayName = dateObj.toLocaleString("default", { weekday: "long" });
-  const dayNum = dateObj.getDate();
+  const day = dateObj.toLocaleString("default", { weekday: "long" });
+  const date = dateObj.getDate();
   const month = dateObj.toLocaleString("default", { month: "long" });
-  const date = `${dayName}, ${dayNum} ${month}`;
+  const currentDate = `${day}, ${date} ${month}`;
 
   // Fetching Day, Month and Date from Date Object ENDS
 
@@ -116,7 +116,7 @@ export default function App() {
     };
 
     if (Array.isArray(weatherIcons[weatherCondition])) {
-      if (hour >= 18 || hour <= 6) return weatherIcons[weatherCondition][1];
+      if (hour >= 19 || hour <= 5) return weatherIcons[weatherCondition][1];
       return weatherIcons[weatherCondition][0];
     }
     return weatherIcons[weatherCondition];
@@ -161,7 +161,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <View style={styles.Datecontainer}>
-        <Text style={styles.DateText}>{date}</Text>
+        <Text style={styles.DateText}>{currentDate}</Text>
       </View>
       <View>
         <View style={styles.CurrentLocation}>
